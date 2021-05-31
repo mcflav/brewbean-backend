@@ -1,0 +1,4 @@
+{
+    "jwtPrivateKey": "brewbean_jwtPrivateKey",
+    "db": "brewbean_db"
+}
