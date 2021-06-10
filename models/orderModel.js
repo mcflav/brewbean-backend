@@ -50,7 +50,6 @@ const orderSchema = mongoose.Schema({
     coffee: {
         type: String,
         required: true,
-        unique: true,
         minlength: 5,
         maxlength: 255
    },

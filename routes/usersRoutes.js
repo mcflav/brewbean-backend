@@ -3,18 +3,18 @@ const express = require('express');
 const router = express.Router();
 const {User, validateUsers} = require('../models/orderModel');
 const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const validateObjectId = require('../middleware/validateObjectId');
 
 router.get('/', async (req,res) => {
-    const users = await User.find().sort('firstname');
+    let users = await User.find().sort('firstname');
     res.send(users);
 });
 
 router.get('/:id', validateObjectId, async (req,res) => {
     const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).send('This user could not be found');
     res.send(user);
 });
 
@@ -28,22 +28,20 @@ router.post('/', async (req,res) => {
     user = await user.save();
     
     const token = user.generateAuthToken();
-    res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email', 'firstname']));
+    res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email', 'firstname', 'lastname', 'isAdmin']));
     res.send(user);
 });
 
-router.put('/', async (req,res) => {
+router.put('/:id', [auth, validateObjectId], async (req,res) => {
     const {error} = validateUsers(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     
     const user = await User.findByIdAndUpdate(req.params.id, req.body);
-    if (!user) return res.status(404).send('This user could not be found');
     res.send(user);
 });
 
-router.delete('/:id', async (req,res) => {
+router.delete('/:id', [auth, admin, validateObjectId], async (req,res) => {
     const user = await User.findByIdAndRemove(req.params.id);
-    if (!user) return res.status(404).send('This user could not be found');
     res.send(user);    
 });
 
