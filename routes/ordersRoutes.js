@@ -37,7 +37,7 @@ router.get('/', async (req,res) => {
 
 router.get('/:id', validateObjectId, async (req,res) => {
     const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).send('This order could not be found');
+    if ((!order) && req.params.id !== User._id) return res.status(404).send('Invalid ID.');
     
     res.send(order);
 });
@@ -48,8 +48,7 @@ router.post('/', auth, async (req,res) => {
     
     let coffee = await Coffee.find({coffee: req.body.coffee});
     
-    if (coffee.length != 0) {
-        if (req.body.quantity <= 0) return res.status(400).send('Please enter a quantity greater than zero.');
+    if (req.body.quantity <= 0) return res.status(400).send('Please enter a quantity greater than zero.');
     
         let total = req.body.price * req.body.quantity;
         
@@ -73,24 +72,21 @@ router.post('/', auth, async (req,res) => {
         const subTotal = req.body.price * req.body.quantity;
                 
         createOrder(req.body.coffee, req.body.creamer, req.body.topping, req.body.syrup, req.body.sweetener, req.body.price, req.body.quantity, subTotal, req.body.user);
-    } else {
-        res.status(404).send('This coffee could not be found');
-    }
 });
 
-router.put('/:id', auth, async (req,res) => {
-    const { error } = validateOrders(req.body.coffee);
+router.put('/:id', [auth, validateObjectId], async (req,res) => {
+    const { error } = validateOrders(req.body);
     if (error) return res.status(400).send(errors.details[0].message);
     
     const coffee = await Order.findByIdAndUpdate(req.params.id, req.body);
-    if(!coffee) return res.status(404).send('This order could not be found.');
+    if(!coffee) return res.status(404).send('Invalid ID.');
     
     res.send(coffee);
 });
 
 router.delete('/:id', [auth, admin, validateObjectId], async (req,res) => {
     const order = await Order.findByIdAndRemove(req.params.id);
-    if (!order) return res.status(404).send('This order could not be found.');
+    if (!order) return res.status(404).send('Invalid ID.');
     res.send(order);
 })
 
