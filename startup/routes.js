@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 
 const authentication = require('../routes/authentication');
 const orders = require('../routes/ordersRoutes');
@@ -8,6 +9,7 @@ const error = require('../middleware/error');
 
 module.exports = function(app){
     app.use(express.json());
+    app.use(cors());
     app.use('/api/v1/users', users);
     app.use('/api/v1/coffee', coffees);
     app.use('/api/v1/orders', orders);
