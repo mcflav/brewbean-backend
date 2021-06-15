@@ -28,8 +28,10 @@ router.post('/', async (req,res) => {
     user = await user.save();
     
     const token = user.generateAuthToken();
+    //res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email', 'firstname', 'lastname', 'isAdmin']));
+    //res.send(user);
     res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email', 'firstname', 'lastname', 'isAdmin']));
-    res.send(user);
+    res.send(user + ' ' + token);
 });
 
 router.put('/:id', [auth, validateObjectId], async (req,res) => {
