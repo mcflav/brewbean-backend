@@ -8,7 +8,7 @@ const admin = require('../middleware/admin');
 //const error = require('../middleware/error');
 const router = express.Router();
 
-router.get('/getOrder', async (req,res) => {
+router.post('/getOrder', auth, async (req,res) => {
     
     const user = await User.find();
     const userOrder = req.body.user;
@@ -29,15 +29,15 @@ router.get('/getOrder', async (req,res) => {
     }
 });
 
-router.get('/', async (req,res) => {
-    const orders = await Order.find().sort('coffee');
-    res.send(orders);
+router.get('/', auth, async (req,res) => {
+   const orders = await Order.find().sort('coffee');
+   res.send(orders);
 });
 
 
-router.get('/:id', validateObjectId, async (req,res) => {
+router.get('/:id', auth, validateObjectId, async (req,res) => {
     const order = await Order.findById(req.params.id);
-    if ((!order) && req.params.id !== User._id) return res.status(404).send('Invalid ID.');
+    //if ((!order) && req.params.id !== User._id) return res.status(404).send('Invalid ID.');
     
     res.send(order);
 });
