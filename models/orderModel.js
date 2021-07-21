@@ -56,25 +56,25 @@ const orderSchema = mongoose.Schema({
    creamer: {
         type: String,
         required: true,
-        minlength: 5,
+        minlength: 3,
         maxlength: 255
    },
    topping: {
         type: String,
         required: true,
-        minlength: 5,
+        minlength: 3,
         maxlength: 255
    },
    syrup: {
         type: String,
         required: true,
-        minlength: 5,
+        minlength: 3,
         maxlength: 255
    },
    sweetener: {
         type: String,
         required: true,
-        minlength: 5,
+        minlength: 3,
         maxlength: 255
    },
    price: {
@@ -111,10 +111,10 @@ function validateUsers(users) {
 function validateOrders(orders) {
     const schema = {
         coffee: Joi.string().min(5).max(255).required(),
-        creamer: Joi.string().min(5).max(255).required(),
-        topping: Joi.string().min(5).max(255).required(),
-        syrup: Joi.string().min(5).max(255).required(),
-        sweetener: Joi.string().min(5).max(255).required(),
+        creamer: Joi.string().min(3).max(255).required(),
+        topping: Joi.string().min(3).max(255).required(),
+        syrup: Joi.string().min(3).max(255).required(),
+        sweetener: Joi.string().min(3).max(255).required(),
         price: Joi.number().required(),
         quantity: Joi.number().required(),
         user: Joi.objectid().required()

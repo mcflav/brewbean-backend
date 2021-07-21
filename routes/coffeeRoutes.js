@@ -7,12 +7,12 @@ const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const mongoose = require('mongoose');
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
    const coffee = await Coffee.find().sort('coffee');
    res.send(coffee);
 });
 
-router.get('/:id', validateObjectId, async (req, res) => {
+router.get('/:id', auth, validateObjectId, async (req, res) => {
     const coffee = await Coffee.findById(req.params.id);
     res.send(coffee);
 });
