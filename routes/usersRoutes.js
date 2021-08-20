@@ -16,7 +16,7 @@ router.get('/', async (req,res) => {
    res.send(users);
 });
 
-router.get('/:id', validateObjectId, async (req,res) => {
+router.get('/:id', auth, validateObjectId, async (req,res) => {
     const user = await User.findById(req.params.id);
     res.send(user);
 });
@@ -30,20 +30,14 @@ router.post('/', async (req,res) => {
     user.password = await bcrypt.hash(user.password, salt);
     user = await user.save();
 
-    const token = jwt.sign({id: user._id}, config.get('jwtPrivateKey'), {
+    const token = jwt.sign({id: user._id, isAdmin: user.isAdmin}, config.get('jwtPrivateKey'), {
         expiresIn: 86400
     });
     res.status(200).send({auth: true, token: token });
 });
-    //res.send(_.pick(user, ['_id', 'email', 'firstname', 'lastname', 'isAdmin']));
-    
-    // const token = user.generateAuthToken();
-    // //res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email', 'firstname', 'lastname', 'isAdmin']));
-    // //res.send(user);
-    // res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email', 'firstname', 'lastname', 'isAdmin']));
-    // res.send(user + ' ' + token);
-
-router.put('/:id', [validateObjectId], async (req,res) => {
+   
+   
+router.put('/:id', [auth, admin, validateObjectId], async (req,res) => {
     const {error} = validateUsers(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     
@@ -51,7 +45,7 @@ router.put('/:id', [validateObjectId], async (req,res) => {
     res.send(user);
 });
 
-router.delete('/:id', [admin, validateObjectId], async (req,res) => {
+router.delete('/:id', [auth, admin, validateObjectId], async (req,res) => {
     const user = await User.findByIdAndRemove(req.params.id);
     res.send(user);    
 });
