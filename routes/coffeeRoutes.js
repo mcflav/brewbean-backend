@@ -4,7 +4,6 @@ const router = express.Router();
 const validateObjectId = require('../middleware/validateObjectId');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
-const mongoose = require('mongoose');
 
 router.get('/', auth, async (req, res) => {
    const coffee = await Coffee.find().sort('coffee');
