@@ -1,11 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const { Order, User, validateOrders } = require('../models/orderModel');
-const { Coffee } = require('../models/coffeeModel');
 const validateObjectId = require('../middleware/validateObjectId');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
-//const error = require('../middleware/error');
 const router = express.Router();
 
 router.post('/getOrder', auth, async (req,res) => {
@@ -44,12 +41,8 @@ router.post('/', auth, async (req,res) => {
     const {error} = validateOrders(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     
-    let coffee = await Coffee.find({coffee: req.body.coffee});
-    
     if (req.body.quantity <= 0) return res.status(400).send('Please enter a quantity greater than zero.');
     
-        let total = req.body.price * req.body.quantity;
-        
         async function createOrder(coffee, creamer, topping, syrup, sweetener, price, quantity, subTotal, user) {
             const order = new Order ({
                 coffee,
