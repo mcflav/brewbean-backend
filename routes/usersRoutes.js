@@ -12,7 +12,7 @@ router.get('/', async (req,res) => {
    res.send(users);
 });
 
-router.get('/:id', auth, validateObjectId, async (req,res) => {
+router.get('/:id', validateObjectId, async (req,res) => {
     const user = await User.findById(req.params.id);
     res.send(user);
 });
@@ -30,7 +30,7 @@ router.post('/', async (req,res) => {
 });
    
    
-router.put('/:id', [auth, admin, validateObjectId], async (req,res) => {
+router.put('/:id', [admin, validateObjectId], async (req,res) => {
     const {error} = validateUsers(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     
@@ -38,7 +38,7 @@ router.put('/:id', [auth, admin, validateObjectId], async (req,res) => {
     res.send(user);
 });
 
-router.delete('/:id', [auth, admin, validateObjectId], async (req,res) => {
+router.delete('/:id', [admin, validateObjectId], async (req,res) => {
     const user = await User.findByIdAndRemove(req.params.id);
     res.send(user);    
 });
