@@ -65,7 +65,7 @@ router.post('/', auth, async (req,res) => {
         createOrder(req.body.coffee, req.body.creamer, req.body.topping, req.body.syrup, req.body.sweetener, req.body.price, req.body.quantity, subTotal, req.body.user);
 });
 
-router.put('/:id', [auth, admin, validateObjectId], async (req,res) => {
+router.put('/:id', [auth, validateObjectId], async (req,res) => {
     const { error } = validateOrders(req.body);
     if (error) return res.status(400).send(errors.details[0].message);
     
